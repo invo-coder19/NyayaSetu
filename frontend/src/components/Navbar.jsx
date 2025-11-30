@@ -1,7 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Shield, Globe } from "lucide-react";
+import { Menu, X, Shield, Globe, User, ChevronDown } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { navigateToRoleTarget } from "@/utils/navigation";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,23 +14,79 @@ import {
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { toast } = useToast();
 
-  const navLinks = [
-    { label: "Home", path: "/" },
-    { label: "Victim Portal", path: "/victim" },
-    { label: "Officer Portal", path: "/officer" },
-    { label: "Financial Portal", path: "/financial" },
-    { label: "Ministry Dashboard", path: "/ministry" },
-    { label: "Transparency Hub", path: "/transparency" },
-    { label: "Grievances", path: "/grievances" },
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    if (showUserDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserDropdown]);
+
+  const handleLogout = () => {
+    logout();
+    setShowUserDropdown(false);
+  };
+
+  const handleVictimPortalClick = (e) => {
+    e.preventDefault();
+    setIsOpen(false);
+    navigateToRoleTarget(navigate, location, '/victim-portal', 'victim', { isAuthenticated, user }, toast);
+  };
+
+  const handleOfficerPortalClick = (e) => {
+    e.preventDefault();
+    setIsOpen(false);
+    navigateToRoleTarget(navigate, location, '/officer-portal', 'officer', { isAuthenticated, user }, toast);
+  };
+
+  // Define navigation links based on login state
+  const loggedOutNavLinks = [
+    { label: "Home", path: "/", type: "link" },
+    { label: "Victim Portal", path: "/victim-portal", type: "portal", role: "victim", handler: handleVictimPortalClick },
+    { label: "Officer Portal", path: "/officer-portal", type: "portal", role: "officer", handler: handleOfficerPortalClick },
+    { label: "Transparency Hub", path: "/transparency", type: "link" },
   ];
+
+  // Role-based navigation for logged-in users
+  const getLoggedInNavLinks = () => {
+    if (!user?.role) return [];
+
+    if (user.role === 'victim') {
+      // Victims see no navigation links
+      return [];
+    } else if (user.role === 'officer') {
+      // Officers see no navigation links
+      return [];
+    }
+
+    return [];
+  };
+
+  // Use appropriate nav links based on login state
+  const navLinks = isAuthenticated ? getLoggedInNavLinks() : loggedOutNavLinks;
 
   return (
     <nav className="sticky top-0 z-50 bg-card border-b shadow-card">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link to="/" className="flex items-center space-x-2 group">{/* Logo */}
             <div className="bg-primary p-2 rounded-lg transition-smooth group-hover:bg-primary-hover">
               <Shield className="h-6 w-6 text-primary-foreground" />
             </div>
@@ -40,11 +99,24 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
             {navLinks.map((link) => (
-              <Link key={link.path} to={link.path}>
-                <Button variant="ghost" size="sm" className="transition-base hover:bg-muted">
+              link.type === 'portal' ? (
+                <a
+                  key={link.path}
+                  href="#"
+                  onClick={link.handler}
+                  className="px-3 py-2 text-sm font-medium text-foreground border border-transparent hover:border-black hover:rounded-lg hover:bg-transparent transition-all duration-200 cursor-pointer"
+                >
                   {link.label}
-                </Button>
-              </Link>
+                </a>
+              ) : (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="px-3 py-2 text-sm font-medium text-foreground border border-transparent hover:border-black hover:rounded-lg hover:bg-transparent transition-all duration-200"
+                >
+                  {link.label}
+                </Link>
+              )
             ))}
           </div>
 
@@ -63,12 +135,39 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Login Button */}
-            <Link to="/login">
-              <Button className="bg-primary hover:bg-primary-hover transition-base">
-                Login
-              </Button>
-            </Link>
+            {/* Login/User Dropdown */}
+            {isAuthenticated ? (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setShowUserDropdown(!showUserDropdown)}
+                  className="flex items-center space-x-2 px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200"
+                  style={{ color: '#0A1E5C' }}
+                >
+                  <User className="h-4 w-4" />
+                  <span>Welcome, {user?.name || 'User'}</span>
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+
+                {/* Custom Dropdown */}
+                {showUserDropdown && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-3 text-sm font-medium hover:bg-gray-100 rounded-lg transition-all duration-200"
+                      style={{ color: '#0A1E5C' }}
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/login">
+                <Button className="bg-primary hover:bg-primary-hover transition-base">
+                  Login
+                </Button>
+              </Link>
+            )}
 
             {/* Mobile Menu Toggle */}
             <Button
@@ -86,11 +185,25 @@ const Navbar = () => {
         {isOpen && (
           <div className="lg:hidden py-4 space-y-2 border-t">
             {navLinks.map((link) => (
-              <Link key={link.path} to={link.path} onClick={() => setIsOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start">
+              link.type === 'portal' ? (
+                <a
+                  key={link.path}
+                  href="#"
+                  onClick={link.handler}
+                  className="block px-4 py-2 text-sm font-medium text-foreground border border-transparent hover:border-black hover:rounded-lg hover:bg-transparent transition-all duration-200 cursor-pointer"
+                >
                   {link.label}
-                </Button>
-              </Link>
+                </a>
+              ) : (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-2 text-sm font-medium text-foreground border border-transparent hover:border-black hover:rounded-lg hover:bg-transparent transition-all duration-200"
+                >
+                  {link.label}
+                </Link>
+              )
             ))}
           </div>
         )}

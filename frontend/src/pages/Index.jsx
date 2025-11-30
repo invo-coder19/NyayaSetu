@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Accordion,
   AccordionContent,
@@ -12,6 +12,7 @@ import {
   Users,
   Building2,
   BarChart3,
+  Landmark,
   Lock,
   Clock,
   CheckCircle2,
@@ -28,8 +29,16 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ctaBackground from "@/assets/cta-background.jpg";
+import { useAuth } from "@/contexts/AuthContext";
+import { navigateToRoleTarget } from "@/utils/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const auth = useAuth();
+  const { toast } = useToast();
+
   const features = [
     {
       icon: Shield,
@@ -68,31 +77,27 @@ const Index = () => {
       title: "Victim Portal",
       description: "Register, track funds, and access emergency relief.",
       icon: Users,
-      path: "/victim",
+      path: "/victim-portal",
+      role: "victim",
       color: "bg-accent",
     },
     {
       title: "Officer Portal",
       description: "Verify cases, sanction funds, and monitor performance.",
       icon: FileText,
-      path: "/officer",
+      path: "/officer-portal",
+      role: "officer",
       color: "bg-primary",
     },
-    {
-      title: "Financial Portal",
-      description: "Manage disbursements and confirm transactions.",
-      icon: Building2,
-      path: "/financial",
-      color: "bg-secondary",
-    },
-    {
-      title: "Ministry Dashboard",
-      description: "Pan-India oversight and analytics for policymakers.",
-      icon: BarChart3,
-      path: "/ministry",
-      color: "bg-info",
-    },
   ];
+
+  const handleApplyForRelief = () => {
+    navigateToRoleTarget(navigate, location, '/victim-portal', 'victim', auth, toast);
+  };
+
+  const handlePortalClick = (portal) => {
+    navigateToRoleTarget(navigate, location, portal.path, portal.role, auth, toast);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -106,24 +111,26 @@ const Index = () => {
               <Shield className="h-4 w-4" />
               <span>Secure • Transparent • Swift</span>
             </div>
-            
+
             <h1 className="text-4xl md:text-6xl font-bold leading-tight">
               Justice with Dignity:<br />
               Direct Benefit Transfer
             </h1>
-            
+
             <p className="text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto">
-              Ensuring swift relief and support to victims under PCR/PoA Acts through a transparent, 
+              Ensuring swift relief and support to victims under PCR/PoA Acts through a transparent,
               blockchain-backed system with multi-stakeholder coordination.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Link to="/victim">
-                <Button size="lg" className="bg-accent hover:bg-accent-hover text-accent-foreground shadow-elevated transition-base">
-                  Apply for Relief
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                className="bg-accent hover:bg-accent-hover text-accent-foreground shadow-elevated transition-base"
+                onClick={handleApplyForRelief}
+              >
+                Apply for Relief
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
               <Link to="/transparency">
                 <Button size="lg" variant="outline" className="bg-white/10 border-white/30 hover:bg-white/20 text-white transition-base">
                   View Transparency Hub
@@ -157,14 +164,18 @@ const Index = () => {
               Select Your Portal
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Role-based access for victims, officers, financial institutions, and ministry officials
+              Role-based access for victims and officers
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {portals.map((portal, index) => (
-              <Link key={index} to={portal.path}>
-                <Card className="p-6 h-full hover:shadow-elevated transition-smooth hover:scale-105 cursor-pointer group">
+          <div className="max-w-3xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8">
+              {portals.map((portal, index) => (
+                <Card
+                  key={index}
+                  className="p-6 h-full hover:shadow-elevated transition-smooth hover:scale-105 cursor-pointer group"
+                  onClick={() => handlePortalClick(portal)}
+                >
                   <div className={`${portal.color} w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-smooth`}>
                     <portal.icon className="h-7 w-7 text-white" />
                   </div>
@@ -175,8 +186,8 @@ const Index = () => {
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-base" />
                   </div>
                 </Card>
-              </Link>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -360,8 +371,8 @@ const Index = () => {
               <AccordionItem value="ministry" className="border rounded-lg px-6 bg-card">
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center gap-3">
-                    <div className="bg-info w-10 h-10 rounded-lg flex items-center justify-center">
-                      <BarChart3 className="h-5 w-5 text-white" />
+                    <div className="bg-[#FFBF00] w-10 h-10 rounded-lg flex items-center justify-center">
+                      <Landmark className="h-5 w-5 text-white" />
                     </div>
                     <span className="text-xl font-semibold">Ministry Dashboard</span>
                   </div>
@@ -372,42 +383,42 @@ const Index = () => {
                   </p>
                   <div className="space-y-3">
                     <div className="flex gap-3">
-                      <BarChart3 className="h-5 w-5 text-info flex-shrink-0 mt-0.5" />
+                      <Landmark className="h-5 w-5 text-[#FFBF00] flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-foreground">Centralized Analytics</p>
                         <p className="text-sm">Access pan-India fund utilization reports, state-wise performance metrics, and district-level insights.</p>
                       </div>
                     </div>
                     <div className="flex gap-3">
-                      <TrendingUp className="h-5 w-5 text-info flex-shrink-0 mt-0.5" />
+                      <TrendingUp className="h-5 w-5 text-[#FFBF00] flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-foreground">Real-Time Dashboards</p>
                         <p className="text-sm">Monitor live data on pending cases, disbursed funds, processing times, and regional performance.</p>
                       </div>
                     </div>
                     <div className="flex gap-3">
-                      <Lock className="h-5 w-5 text-info flex-shrink-0 mt-0.5" />
+                      <Lock className="h-5 w-5 text-[#FFBF00] flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-foreground">Transparency Features</p>
                         <p className="text-sm">Blockchain-backed immutable ledger provides complete transparency and prevents fund misuse.</p>
                       </div>
                     </div>
                     <div className="flex gap-3">
-                      <Award className="h-5 w-5 text-info flex-shrink-0 mt-0.5" />
+                      <Award className="h-5 w-5 text-[#FFBF00] flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-foreground">Impact Visualizations</p>
                         <p className="text-sm">Interactive charts and graphs showing relief impact, beneficiary demographics, and policy effectiveness.</p>
                       </div>
                     </div>
                     <div className="flex gap-3">
-                      <Bell className="h-5 w-5 text-info flex-shrink-0 mt-0.5" />
+                      <Bell className="h-5 w-5 text-[#FFBF00] flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium text-foreground">Grievance Statistics</p>
                         <p className="text-sm">Track grievance trends, resolution times, and identify systemic issues for policy improvements.</p>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm italic border-l-4 border-info pl-4 py-2 bg-info/5">
+                  <p className="text-sm italic border-l-4 border-[#FFBF00] pl-4 py-2 bg-[#FFBF00]/5">
                     "Driving accountability, transparency, and efficiency to ensure every rupee reaches those who need it most."
                   </p>
                 </AccordionContent>
@@ -481,12 +492,14 @@ const Index = () => {
             </div>
 
             <div className="text-center space-y-6">
-              <Link to="/victim">
-                <Button size="lg" className="bg-accent hover:bg-accent-hover text-accent-foreground shadow-elevated">
-                  Begin Your Relief Application
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                className="bg-accent hover:bg-accent-hover text-accent-foreground shadow-elevated"
+                onClick={handleApplyForRelief}
+              >
+                Begin Your Relief Application
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
 
               <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
@@ -536,7 +549,7 @@ const Index = () => {
       {/* CTA Section */}
       <section className="py-20 bg-muted">
         <div className="container mx-auto px-4">
-          <Card 
+          <Card
             className="p-8 md:p-12 text-primary-foreground relative overflow-hidden"
             style={{
               backgroundImage: `linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(14, 116, 144, 0.95) 100%), url(${ctaBackground})`,
@@ -558,7 +571,7 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Button size="lg" variant="outline" className="bg-white/10 border-white/30 hover:bg-white/20 text-white">
-                  Call: 1800-XXX-XXXX
+                  Call: 1800-202-1989
                 </Button>
               </div>
             </div>

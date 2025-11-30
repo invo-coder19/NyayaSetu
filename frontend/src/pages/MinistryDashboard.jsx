@@ -320,19 +320,6 @@ const MinistryDashboard = () => {
       </section>
 
       {/* Help Section */}
-      <section className="py-8 px-4 bg-muted/50">
-        <div className="container mx-auto text-center">
-          <h3 className="text-lg font-semibold mb-2">Need Technical Support?</h3>
-          <p className="text-muted-foreground mb-4">
-            Contact the system administration team for dashboard access or technical issues
-          </p>
-          <Button variant="outline">
-            <Settings className="w-4 h-4 mr-2" />
-            System Settings
-          </Button>
-        </div>
-      </section>
-
       <Footer />
     </div>
   );

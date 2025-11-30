@@ -1,7 +1,25 @@
 import { Shield, Mail, Phone, MapPin } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { navigateToRoleTarget } from "@/utils/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const auth = useAuth();
+  const { toast } = useToast();
+
+  const handleVictimPortalClick = (e) => {
+    e.preventDefault();
+    navigateToRoleTarget(navigate, location, '/victim-portal', 'victim', auth, toast);
+  };
+
+  const handleOfficerPortalClick = (e) => {
+    e.preventDefault();
+    navigateToRoleTarget(navigate, location, '/officer-portal', 'officer', auth, toast);
+  };
+
   return (
     <footer className="bg-primary text-primary-foreground mt-20">
       <div className="container mx-auto px-4 py-12">
@@ -21,8 +39,24 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/victim" className="hover:underline">Victim Portal</Link></li>
-              <li><Link to="/officer" className="hover:underline">Officer Portal</Link></li>
+              <li>
+                <a
+                  href="#"
+                  onClick={handleVictimPortalClick}
+                  className="hover:underline cursor-pointer"
+                >
+                  Victim Portal
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  onClick={handleOfficerPortalClick}
+                  className="hover:underline cursor-pointer"
+                >
+                  Officer Portal
+                </a>
+              </li>
               <li><Link to="/transparency" className="hover:underline">Transparency Hub</Link></li>
               <li><Link to="/grievances" className="hover:underline">File Grievance</Link></li>
             </ul>
@@ -45,7 +79,7 @@ const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>1800-XXX-XXXX (Toll-Free)</span>
+                <span>18002021989 (Toll-Free)</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
@@ -53,7 +87,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4" />
-                <span>Ministry of Home Affairs, India</span>
+                <span>Ministry of Social Justice & Empowerment, New Delhi</span>
               </li>
             </ul>
           </div>

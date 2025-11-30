@@ -483,7 +483,7 @@ const OfficerPortal = () => {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-4 gap-4 mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
@@ -512,18 +512,6 @@ const OfficerPortal = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Avg. AI Score</p>
-                      <p className="text-3xl font-bold">86%</p>
-                    </div>
-                    <Brain className="h-10 w-10 text-primary opacity-20" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
                       <p className="text-sm text-muted-foreground">Funds Processed</p>
                       <p className="text-3xl font-bold">₹8.2L</p>
                     </div>
@@ -538,14 +526,10 @@ const OfficerPortal = () => {
         <section className="py-12">
           <div className="container mx-auto px-4">
             <Tabs defaultValue="cases" className="w-full">
-              <TabsList className="grid w-full grid-cols-5 mb-8">
+              <TabsList className="grid w-full grid-cols-4 mb-8">
                 <TabsTrigger value="cases">
                   <FileCheck className="h-4 w-4 mr-2" />
                   Case Review
-                </TabsTrigger>
-                <TabsTrigger value="verification">
-                  <Brain className="h-4 w-4 mr-2" />
-                  AI Verification
                 </TabsTrigger>
                 <TabsTrigger value="disbursement">
                   <IndianRupee className="h-4 w-4 mr-2" />
@@ -652,134 +636,6 @@ const OfficerPortal = () => {
                     </div>
                   </CardContent>
                 </Card>
-              </TabsContent>
-
-              {/* AI Verification Tab */}
-              <TabsContent value="verification">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Brain className="h-5 w-5 text-primary" />
-                        AI-Based Verification Insights
-                      </CardTitle>
-                      <CardDescription>
-                        Machine learning models analyze case authenticity and documentation
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="p-4 bg-primary/5 rounded-lg">
-                          <div className="flex items-center gap-3 mb-2">
-                            <Verified className="h-5 w-5 text-primary" />
-                            <h4 className="font-semibold">Document Authenticity Check</h4>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-3">
-                            AI scans FIR copies, medical certificates, and income proofs for tampering, anomalies, or forgery.
-                          </p>
-                          <div className="grid grid-cols-2 gap-2 text-sm">
-                            <div className="flex items-center gap-2">
-                              <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                              <span>Real documents: 89%</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="h-2 w-2 rounded-full bg-yellow-500"></div>
-                              <span>Needs review: 8%</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="h-2 w-2 rounded-full bg-red-500"></div>
-                              <span>Flagged: 3%</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="p-4 bg-secondary/5 rounded-lg">
-                          <div className="flex items-center gap-3 mb-2">
-                            <AlertCircle className="h-5 w-5 text-secondary" />
-                            <h4 className="font-semibold">Cross-Verification Alerts</h4>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Automatic checks against NCRB data, court records, and existing claims to prevent duplicates.
-                          </p>
-                        </div>
-
-                        <div className="p-4 bg-accent/5 rounded-lg">
-                          <div className="flex items-center gap-3 mb-2">
-                            <TrendingUp className="h-5 w-5 text-accent" />
-                            <h4 className="font-semibold">Pattern Recognition</h4>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Identifies unusual patterns in submissions (location, time, claim amounts) to detect fraud.
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <FileCheck className="h-5 w-5 text-primary" />
-                        Document Validation Reports
-                      </CardTitle>
-                      <CardDescription>
-                        Comprehensive validation status of submitted documents
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="border rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="font-medium">FIR Copy</span>
-                            <Badge variant="default">Verified</Badge>
-                          </div>
-                          <Progress value={100} className="h-2 mb-2" />
-                          <p className="text-sm text-muted-foreground">
-                            ✓ Police station verified ✓ Date valid ✓ Signature authentic
-                          </p>
-                        </div>
-
-                        <div className="border rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="font-medium">Medical Certificate</span>
-                            <Badge variant="default">Verified</Badge>
-                          </div>
-                          <Progress value={95} className="h-2 mb-2" />
-                          <p className="text-sm text-muted-foreground">
-                            ✓ Hospital verified ✓ Doctor signature matched ✓ Date consistent
-                          </p>
-                        </div>
-
-                        <div className="border rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="font-medium">Income Certificate</span>
-                            <Badge variant="secondary">Under Review</Badge>
-                          </div>
-                          <Progress value={70} className="h-2 mb-2" />
-                          <p className="text-sm text-muted-foreground">
-                            ⚠ Awaiting Tehsildar office confirmation
-                          </p>
-                        </div>
-
-                        <div className="border rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="font-medium">Caste Certificate</span>
-                            <Badge variant="default">Verified</Badge>
-                          </div>
-                          <Progress value={100} className="h-2 mb-2" />
-                          <p className="text-sm text-muted-foreground">
-                            ✓ Government database matched ✓ Digitally signed
-                          </p>
-                        </div>
-                      </div>
-
-                      <Button className="w-full mt-4">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download Full Validation Report
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
               </TabsContent>
 
               {/* Fund Tracking Tab */}
@@ -1054,26 +910,6 @@ const OfficerPortal = () => {
         </section>
 
         {/* Help Section */}
-        <section className="py-12 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-2xl font-bold mb-4">Need Technical Support?</h2>
-              <p className="text-muted-foreground mb-6">
-                Our dedicated team is here to assist you with case processing, verification queries, or technical issues.
-              </p>
-              <div className="flex gap-4 justify-center">
-                <Button>
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Contact Support
-                </Button>
-                <Button variant="outline">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Documentation
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
 
       {/* View Details Modal */}

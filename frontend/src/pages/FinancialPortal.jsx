@@ -233,29 +233,6 @@ const FinancialPortal = () => {
             </Tabs>
           </div>
         </section>
-
-        {/* Help Section */}
-        <section className="py-12 bg-muted/30 border-t">
-          <div className="container mx-auto px-4">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-start gap-4">
-                  <AlertCircle className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-2">Need Assistance?</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      For financial queries, budget approvals, or technical support, contact the Finance Department
-                    </p>
-                    <div className="flex gap-4">
-                      <Button>Contact Support</Button>
-                      <Button variant="outline">View Documentation</Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
       </main>
 
       <Footer />

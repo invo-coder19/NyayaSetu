@@ -202,21 +202,20 @@ const VictimPortal = () => {
   const caseStages = [
     { stage: "Application Filed", status: "completed", date: "2024-01-15" },
     { stage: "Document Verification", status: "completed", date: "2024-01-16" },
-    { stage: "AI Verification", status: "completed", date: "2024-01-17" },
     {
       stage: "Officer Review",
       status: officerQueries.every(q => q.status === "Resolved") ? "completed" : "in-progress",
-      date: officerQueries.every(q => q.status === "Resolved") ? "2024-01-18" : "In Progress"
+      date: officerQueries.every(q => q.status === "Resolved") ? "2024-01-17" : "In Progress"
     },
     {
       stage: "Relief Sanctioned",
       status: officerQueries.every(q => q.status === "Resolved") ? "completed" : "pending",
-      date: officerQueries.every(q => q.status === "Resolved") ? "2024-01-19" : "Pending"
+      date: officerQueries.every(q => q.status === "Resolved") ? "2024-01-18" : "Pending"
     },
     {
       stage: "DBT to Bank Account",
       status: officerQueries.every(q => q.status === "Resolved") ? "completed" : "pending",
-      date: officerQueries.every(q => q.status === "Resolved") ? "2024-01-20" : "Pending"
+      date: officerQueries.every(q => q.status === "Resolved") ? "2024-01-19" : "Pending"
     },
     {
       stage: "Victim Confirmation",
@@ -337,25 +336,13 @@ const VictimPortal = () => {
                             />
                           </div>
 
-                          <div className="space-y-2">
+                          <div className="space-y-2 md:col-span-2">
                             <Label htmlFor="email">Email Address (Optional)</Label>
                             <Input
                               id="email"
                               type="email"
                               placeholder="your.email@example.com"
                             />
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label htmlFor="language">Preferred Language *</Label>
-                            <select
-                              id="language"
-                              className="w-full h-10 px-3 rounded-md border border-input bg-background"
-                              required
-                            >
-                              <option value="english">English</option>
-                              <option value="hindi">हिन्दी (Hindi)</option>
-                            </select>
                           </div>
                         </div>
                       </div>
@@ -569,23 +556,6 @@ const VictimPortal = () => {
                                 maxLength={6}
                               />
                             </div>
-                          </div>
-
-                          <div className="flex items-center gap-3">
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="outline"
-                              onClick={() => {
-                                console.log('Use current location clicked');
-                                toast({
-                                  title: "Location Access",
-                                  description: "Location detection is not implemented in this demo.",
-                                });
-                              }}
-                            >
-                              Use my current location
-                            </Button>
                           </div>
 
                         </div>
@@ -1340,9 +1310,13 @@ const VictimPortal = () => {
               </Card>
             </div>
 
-            <div className="mt-8 text-center">
-              <Button variant="outline" asChild>
-                <a href="/grievances">
+            <div className="mt-8 flex justify-center">
+              <Button
+                variant="outline"
+                asChild
+                className="w-full max-w-4xl h-14 bg-white border-gray-300 text-[#1e3a8a] hover:bg-orange-500 hover:text-white hover:border-orange-500 rounded-lg transition-all"
+              >
+                <a href="/grievances" className="flex items-center justify-center">
                   <AlertCircle className="mr-2 h-4 w-4" />
                   File a Grievance
                 </a>

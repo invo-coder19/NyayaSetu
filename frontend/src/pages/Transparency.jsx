@@ -62,7 +62,7 @@ const Transparency = () => {
       value: "9,823",
       change: "+18.5%",
       icon: CheckCircle2,
-      color: "bg-success",
+      color: "bg-green-500",
     },
     {
       label: "Avg. Processing Time",

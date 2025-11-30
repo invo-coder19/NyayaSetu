@@ -1,14 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, Users, Building2, BarChart3, FileText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Shield, Users, Building2, BarChart3, Landmark, FileText } from "lucide-react";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
+  const { role: urlRole } = useParams(); // Get role from URL parameter
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [selectedRole, setSelectedRole] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Auto-select role if provided in URL
+  useEffect(() => {
+    if (urlRole && (urlRole === 'victim' || urlRole === 'officer')) {
+      setSelectedRole(urlRole);
+    }
+  }, [urlRole]);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // Extract username from email (before @)
+    const userName = email.split("@")[0] || "User";
+
+    // Mock authentication - in production, this would make an API call
+    if (email && password) {
+      login(userName, selectedRole);
+
+      // Redirect to intended destination or default portal
+      const intendedDestination = location.state?.from;
+      const defaultDestination = selectedRole === 'victim' ? '/victim-portal' : '/officer-portal';
+
+      console.log(`🎯 Redirecting to: ${intendedDestination || defaultDestination}`);
+      navigate(intendedDestination || defaultDestination);
+    }
+  };
 
   const roles = [
     {
@@ -25,29 +59,16 @@ const Login = () => {
       icon: FileText,
       color: "bg-primary",
     },
-    {
-      id: "financial",
-      title: "Financial Institution",
-      description: "Manage fund disbursements",
-      icon: Building2,
-      color: "bg-secondary",
-    },
-    {
-      id: "ministry",
-      title: "Central Ministry",
-      description: "Monitor and analyze operations",
-      icon: BarChart3,
-      color: "bg-info",
-    },
   ];
 
+  // If no role selected, show role selection screen
   if (!selectedRole) {
     return (
-      <div className="min-h-screen bg-gradient-dashboard">
+      <div className="min-h-screen bg-gradient-dashboard flex flex-col">
         <Navbar />
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
+        <div className="flex-1 flex items-center justify-center px-4 py-8">
+          <div className="w-full max-w-md">
+            <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
                 <Shield className="h-8 w-8 text-primary-foreground" />
               </div>
@@ -59,18 +80,22 @@ const Login = () => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-4">
               {roles.map((role) => (
                 <Card
                   key={role.id}
-                  className="p-6 cursor-pointer hover:shadow-elevated transition-smooth hover:scale-105 group"
-                  onClick={() => setSelectedRole(role.id)}
+                  className="p-8 cursor-pointer hover:shadow-elevated transition-smooth hover:scale-105 group"
+                  onClick={() => navigate(`/login/${role.id}`)}
                 >
-                  <div className={`${role.color} w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-smooth`}>
-                    <role.icon className="h-7 w-7 text-white" />
+                  <div className="flex items-center gap-4">
+                    <div className={`${role.color} w-16 h-16 rounded-xl flex items-center justify-center group-hover:scale-110 transition-smooth flex-shrink-0`}>
+                      <role.icon className="h-8 w-8 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-xl font-semibold mb-1">{role.title}</h3>
+                      <p className="text-muted-foreground text-sm">{role.description}</p>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{role.title}</h3>
-                  <p className="text-muted-foreground text-sm">{role.description}</p>
                 </Card>
               ))}
             </div>
@@ -96,13 +121,17 @@ const Login = () => {
               <p className="text-muted-foreground text-sm">{currentRole.description}</p>
             </div>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleLogin}>
               <div className="space-y-2">
                 <Label htmlFor="userId">User ID / Email</Label>
                 <Input
                   id="userId"
-                  placeholder="Enter your credentials"
+                  type="email"
+                  placeholder="Enter your email"
                   className="transition-base"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
 
@@ -113,6 +142,9 @@ const Login = () => {
                   type="password"
                   placeholder="Enter your password"
                   className="transition-base"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
 
@@ -135,9 +167,22 @@ const Login = () => {
                   <p className="text-sm text-muted-foreground mb-2">
                     New applicant?
                   </p>
-                  <Link to="/register">
+                  <Link to="/register/victim">
                     <Button variant="outline" className="w-full">
                       Register for Relief
+                    </Button>
+                  </Link>
+                </div>
+              )}
+
+              {selectedRole === "officer" && (
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    New to the system?
+                  </p>
+                  <Link to="/register/officer">
+                    <Button variant="outline" className="w-full">
+                      Register
                     </Button>
                   </Link>
                 </div>
@@ -148,7 +193,10 @@ const Login = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setSelectedRole(null)}
+                onClick={() => {
+                  setSelectedRole(null);
+                  navigate('/login');
+                }}
                 className="text-muted-foreground"
               >
                 ← Change Role
@@ -159,7 +207,7 @@ const Login = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               Need help? Call our 24/7 helpline:{" "}
-              <span className="font-semibold text-foreground">1800-XXX-XXXX</span>
+              <span className="font-semibold text-foreground">1800-202-1989</span>
             </p>
           </div>
         </div>
