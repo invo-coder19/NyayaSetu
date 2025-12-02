@@ -25,6 +25,9 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
+import LegalPopCard from "@/components/LegalPopCard";
+import VictimSupportFaqContent from "@/components/VictimSupportFaqContent";
+import FileUpload from "@/components/FileUpload";
 
 const VictimPortal = () => {
   const { toast } = useToast();
@@ -45,6 +48,13 @@ const VictimPortal = () => {
   const [utrId, setUtrId] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [verificationError, setVerificationError] = useState("");
+  const [isVictimFaqOpen, setIsVictimFaqOpen] = useState(false);
+
+  // File uploads
+  const [firFile, setFirFile] = useState(null);
+  const [medicalFile, setMedicalFile] = useState(null);
+  const [otherDocsFile, setOtherDocsFile] = useState(null);
+  const [casteFile, setCasteFile] = useState(null);
 
   // Dummy officer transaction ID for frontend verification
   const officerTransactionId = "TXN123456789";
@@ -482,18 +492,13 @@ const VictimPortal = () => {
                           </span>
                         </div>
 
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <FileText className="h-5 w-5 text-muted-foreground" />
-                            <div>
-                              <p className="font-medium text-sm">Caste Certificate (PDF/JPG)</p>
-                              <p className="text-xs text-muted-foreground">Max 5MB</p>
-                            </div>
-                          </div>
-                          <Button type="button" size="sm" variant="outline">
-                            Upload
-                          </Button>
-                        </div>
+                        <FileUpload
+                          id="caste-certificate"
+                          label="Caste Certificate (PDF/JPG)"
+                          helperText="Max 5MB"
+                          onFileChange={setCasteFile}
+                          required
+                        />
                       </div>
 
                       {/* Nature of Atrocity & Incident Details */}
@@ -700,44 +705,27 @@ const VictimPortal = () => {
                           </div>
 
                           <div className="space-y-3">
-                            <div className="flex items-center justify-between p-4 border rounded-lg">
-                              <div className="flex items-center gap-3">
-                                <FileText className="h-5 w-5 text-muted-foreground" />
-                                <div>
-                                  <p className="font-medium text-sm">FIR Copy</p>
-                                  <p className="text-xs text-muted-foreground">PDF, JPG (Max 5MB)</p>
-                                </div>
-                              </div>
-                              <Button type="button" size="sm" variant="outline">
-                                Upload
-                              </Button>
-                            </div>
+                            <FileUpload
+                              id="fir-copy"
+                              label="FIR Copy*"
+                              helperText="PDF, JPG (Max 5MB)"
+                              onFileChange={setFirFile}
+                              required
+                            />
 
-                            <div className="flex items-center justify-between p-4 border rounded-lg">
-                              <div className="flex items-center gap-3">
-                                <FileText className="h-5 w-5 text-muted-foreground" />
-                                <div>
-                                  <p className="font-medium text-sm">Medical Report (if applicable)</p>
-                                  <p className="text-xs text-muted-foreground">PDF, JPG (Max 5MB)</p>
-                                </div>
-                              </div>
-                              <Button type="button" size="sm" variant="outline">
-                                Upload
-                              </Button>
-                            </div>
+                            <FileUpload
+                              id="medical-report"
+                              label="Medical Report (if applicable)"
+                              helperText="PDF, JPG (Max 5MB)"
+                              onFileChange={setMedicalFile}
+                            />
 
-                            <div className="flex items-center justify-between p-4 border rounded-lg">
-                              <div className="flex items-center gap-3">
-                                <FileText className="h-5 w-5 text-muted-foreground" />
-                                <div>
-                                  <p className="font-medium text-sm">Other Supporting Documents</p>
-                                  <p className="text-xs text-muted-foreground">PDF, JPG (Max 5MB each)</p>
-                                </div>
-                              </div>
-                              <Button type="button" size="sm" variant="outline">
-                                Upload
-                              </Button>
-                            </div>
+                            <FileUpload
+                              id="other-docs"
+                              label="Other Supporting Documents"
+                              helperText="PDF, JPG (Max 5MB each)"
+                              onFileChange={setOtherDocsFile}
+                            />
                           </div>
                         </div>
                       </div>
@@ -1286,7 +1274,7 @@ const VictimPortal = () => {
                 </div>
                 <h3 className="font-semibold">Call Us</h3>
                 <p className="text-sm text-muted-foreground">24/7 Helpline</p>
-                <p className="font-bold text-primary">1800-XXX-XXXX</p>
+                <p className="font-bold text-primary">18002021989</p>
               </Card>
 
               <Card className="p-6 text-center space-y-3">
@@ -1304,7 +1292,11 @@ const VictimPortal = () => {
                 </div>
                 <h3 className="font-semibold">FAQs</h3>
                 <p className="text-sm text-muted-foreground">Quick answers</p>
-                <Button variant="link" className="text-primary p-0 h-auto">
+                <Button
+                  variant="link"
+                  className="text-primary p-0 h-auto"
+                  onClick={() => setIsVictimFaqOpen(true)}
+                >
                   View FAQs
                 </Button>
               </Card>
@@ -1352,7 +1344,7 @@ const VictimPortal = () => {
                 <Phone className="h-8 w-8 mx-auto text-accent" />
                 <h3 className="font-semibold">IVR System</h3>
                 <p className="text-sm text-muted-foreground">
-                  Call <strong>1800-XXX-XXXX</strong>
+                  Call <strong>18002021989</strong>
                   <br />
                   Follow voice instructions in your language
                 </p>
@@ -1447,6 +1439,15 @@ const VictimPortal = () => {
           </div>
         </div>
       )}
+
+      {/* Victim Support FAQs Modal */}
+      <LegalPopCard
+        isOpen={isVictimFaqOpen}
+        onClose={() => setIsVictimFaqOpen(false)}
+        title="Victim Support FAQs"
+      >
+        <VictimSupportFaqContent />
+      </LegalPopCard>
 
       <Footer />
     </div>

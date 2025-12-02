@@ -31,7 +31,7 @@ const Grievances = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <div className="flex-1 bg-gradient-dashboard">
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
@@ -132,7 +132,7 @@ const Grievances = () => {
                   <div className="space-y-3 text-sm">
                     <div>
                       <div className="font-medium mb-1">Helpline (24/7)</div>
-                      <div className="text-muted-foreground">1800-XXX-XXXX</div>
+                      <div className="text-muted-foreground">18002021989</div>
                     </div>
                     <div>
                       <div className="font-medium mb-1">Email Support</div>

@@ -198,7 +198,7 @@ const VictimRegistration = () => {
                     <div className="mt-6 text-center">
                         <p className="text-sm text-muted-foreground">
                             Need help? Call our 24/7 helpline:{" "}
-                            <span className="font-semibold text-foreground">1800-202-1989</span>
+                            <span className="font-semibold text-foreground">18002021989</span>
                         </p>
                     </div>
                 </div>

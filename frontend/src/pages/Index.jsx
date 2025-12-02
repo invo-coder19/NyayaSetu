@@ -89,6 +89,14 @@ const Index = () => {
       role: "officer",
       color: "bg-primary",
     },
+    {
+      title: "Emergency fund",
+      description: "Apply for immediate financial assistance in urgent situations.",
+      icon: Clock,
+      path: "/emergency-fund",
+      role: null,
+      color: "bg-orange-600",
+    },
   ];
 
   const handleApplyForRelief = () => {
@@ -96,6 +104,10 @@ const Index = () => {
   };
 
   const handlePortalClick = (portal) => {
+    if (!portal.role) {
+      navigate(portal.path);
+      return;
+    }
     navigateToRoleTarget(navigate, location, portal.path, portal.role, auth, toast);
   };
 
@@ -168,8 +180,8 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-8">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-6">
               {portals.map((portal, index) => (
                 <Card
                   key={index}
@@ -571,7 +583,7 @@ const Index = () => {
                   </Button>
                 </Link>
                 <Button size="lg" variant="outline" className="bg-white/10 border-white/30 hover:bg-white/20 text-white">
-                  Call: 1800-202-1989
+                  Call: 18002021989
                 </Button>
               </div>
             </div>

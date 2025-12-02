@@ -60,7 +60,20 @@ const Navbar = () => {
     { label: "Home", path: "/", type: "link" },
     { label: "Victim Portal", path: "/victim-portal", type: "portal", role: "victim", handler: handleVictimPortalClick },
     { label: "Officer Portal", path: "/officer-portal", type: "portal", role: "officer", handler: handleOfficerPortalClick },
+    { label: "Emergency fund", path: "/emergency-fund", type: "link" },
     { label: "Transparency Hub", path: "/transparency", type: "link" },
+    {
+      label: "PCR Act",
+      path: "https://www.indiacode.nic.in/bitstream/123456789/15434/1/protection_of_civil_rights_act%2C_1955.pdf",
+      type: "external",
+      ariaLabel: "Open PCR Act (PDF) in new tab"
+    },
+    {
+      label: "POA Act",
+      path: "https://www.indiacode.nic.in/bitstream/123456789/15338/1/scheduled_castes_and_the_scheduled_tribes.pdf",
+      type: "external",
+      ariaLabel: "Open POA Act (PDF) in new tab"
+    },
   ];
 
   // Role-based navigation for logged-in users
@@ -105,6 +118,17 @@ const Navbar = () => {
                   href="#"
                   onClick={link.handler}
                   className="px-3 py-2 text-sm font-medium text-foreground border border-transparent hover:border-black hover:rounded-lg hover:bg-transparent transition-all duration-200 cursor-pointer"
+                >
+                  {link.label}
+                </a>
+              ) : link.type === 'external' ? (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.ariaLabel}
+                  className="px-3 py-2 text-sm font-medium text-foreground border border-transparent hover:border-black hover:rounded-lg hover:bg-transparent transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 >
                   {link.label}
                 </a>
@@ -191,6 +215,18 @@ const Navbar = () => {
                   href="#"
                   onClick={link.handler}
                   className="block px-4 py-2 text-sm font-medium text-foreground border border-transparent hover:border-black hover:rounded-lg hover:bg-transparent transition-all duration-200 cursor-pointer"
+                >
+                  {link.label}
+                </a>
+              ) : link.type === 'external' ? (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.ariaLabel}
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-2 text-sm font-medium text-foreground border border-transparent hover:border-black hover:rounded-lg hover:bg-transparent transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 >
                   {link.label}
                 </a>
